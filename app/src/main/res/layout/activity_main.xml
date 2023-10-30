@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/navHostFragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/nav_graph_main" />
+
+        <io.ak1.BubbleTabBar
+            android:id="@+id/bottomTabBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_theme_light"
+            android:elevation="16dp"
+            android:padding="12dp"
+            app:bubbletab_disabled_icon_color="@color/black"
+            app:bubbletab_horizontal_padding="20dp"
+            app:bubbletab_icon_padding="10sp"
+            app:bubbletab_icon_size="20dp"
+            app:bubbletab_menuResource="@menu/bottom_menu"
+            app:bubbletab_tab_corner_radius="25dp"
+            app:bubbletab_title_size="14sp"
+            app:bubbletab_vertical_padding="10dp" />
+    </LinearLayout>
+
+</layout>

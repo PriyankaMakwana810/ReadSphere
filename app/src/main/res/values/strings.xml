@@ -1,0 +1,97 @@
+<resources>
+    <!--    app name-->
+    <string name="app_name">eBookHaven</string>
+
+    <!--    bottom nav bar text-->
+    <string name="home">Home</string>
+    <string name="library">Library</string>
+    <string name="settings">Settings</string>
+    <string name="favorites">Favorites</string>
+
+    <!--    labels -->
+    <string name="enter_password">Enter Password</string>
+    <string name="cancel">Cancel</string>
+    <string name="loading">Loading…</string>
+    <string name="read_book_button">Start Reading</string>
+    <string name="download_book_button">Download</string>
+    <string name="ok">OK</string>
+    <string name="start_reading">Start Reading</string>
+    <string name="continue_reading">Continue Reading</string>
+    <string name="download">Download</string>
+    <string name="not_available">Not Available</string>
+    <string name="my_markings">My Markings</string>
+    <string name="title_of_the_book">Title of the Book</string>
+
+    <!--    place holders text-->
+    <string name="pages_n_a">Pages:\n N/A</string>
+    <string name="publisher_n_a">Publisher:\n N/A</string>
+    <string name="publication_year_n_a">Publication year: \n N/A</string>
+    <string name="no_internet">No Internet!</string>
+    <string name="file_not_found">File Not Found!</string>
+    <string name="refresh">Refresh</string>
+    <string name="book_preview">Book Preview</string>
+    <string name="download_book">Download Book</string>
+    <string name="author_name">Author Name</string>
+    <string name="book_name">Book Name</string>
+    <string name="all_books">All Books</string>
+    <string name="recent_books">Recent Books</string>
+    <string name="book_database">book-database</string>
+    <string name="bookid">BookId</string>
+    <string name="bookepubfile">BookEpubFile</string>
+    <string name="isfrominfobutton">IsFromInfoButton</string>
+    <string name="booksize">BookSize: %1$s</string>
+    <string name="nothing_here">Nothing Here!!</string>
+    <string name="publication_year_n">Publication year: \n</string>
+    <string name="publisher_n">Publisher:\n</string>
+    <string name="pages_n">Pages:\n</string>
+    <string name="switch_off">Switch off</string>
+    <string name="lastpage">lastPage</string>
+    <string name="currentpage">currentPage</string>
+    <string name="_0">0%</string>
+    <string name="page">Page:</string>
+    <string name="advanced_settings">Advanced Settings</string>
+    <string name="screen_rotation_lock">Screen Rotation Lock</string>
+    <string name="line_spacing">Line spacing</string>
+    <string name="lock_book">Lock Book</string>
+    <string name="index">Index</string>
+    <string name="page_num">Page num</string>
+    <string name="font_selection">Font Selection</string>
+    <string name="sans_serif">sans serif</string>
+    <string name="serif">Serif</string>
+    <string name="monospace">Monospace</string>
+    <string name="cursive">Cursive</string>
+    <string name="_default">Default</string>
+    <string name="reading_options">Reading Options</string>
+    <string name="reading_mode">Reading mode</string>
+    <string name="swipe">Swipe</string>
+    <string name="scroll">Scroll</string>
+    <string name="automatic_scrolling">Automatic scrolling</string>
+    <string name="background">Background</string>
+    <string name="save">Save</string>
+    <string name="unlock_book">Unlock book</string>
+    <string name="contact_us">Contact Us :</string>
+    <string name="info_tridhyatech_com">info@tridhyatech.com</string>
+    <string name="www_tridhyatech_com">www.tridhyatech.com</string>
+
+    <!--    errors / messages -->
+    <string name="forgot_password"><u>Forgot password ?</u></string>
+    <string name="downloading_book">Download Started!</string>
+    <string name="storage_perm_error">Please grant storage permission!</string>
+    <string name="please_connect_to_internet_for_using_app">Please connect to Internet for Using App.</string>
+    <string name="you_finished_the_book">You finished the book!</string>
+    <string name="book_may_be_deleted_from_internal_storage_please_re_download_book">Book May be deleted from Internal Storage please Re-Download Book!</string>
+    <string name="browsing_by_clicking_on_margins">Browsing by clicking on margins</string>
+    <string name="space_between_words">Space between words</string>
+    <string name="spacing_from_the_sides">Spacing from the sides</string>
+    <string name="in_recent_years_no_week_goes_by">In Recent Years, No Week Goes by..</string>
+    <string name="automatic_scrolling_is_the_scrolling_of_the_text_down_to_no_touch_in_the_opening_screen_only_in_scrolling_reading_mode_ntouching_the_center_of_the_screen_will_stop_the_auto_scroll">Automatic scrolling is the scrolling of the text down to No Touch in the opening screen only in scrolling reading mode \nTouching the center of the screen will stop the auto-scroll</string>
+    <string name="create_password_for_the_book">Create password for the book</string>
+    <string name="enter_the_book_password">Enter the book password</string>
+    <string name="hint">Search word in the book</string>
+    <string name="developed_maintained_by">Developed &amp; Maintained By :</string>
+    <string name="tridhya_tech_ltd">Tridhya Tech Ltd.</string>
+    <string name="application_version">Application Version :</string>
+    <string name="reader_error_title">Oops! Failed to open the e-book file :(</string>
+    <string name="reader_error_subtitle">There could be several reasons for this to happen. \n 1. The e-book file was deleted.\n 2. The file is there, but you have uninstalled the app previously. \nPlease check inside the EbookHavenEbooks folder in your download directory, and if that\'s the case, please Delete the book. \nOnce you delete the Book you can access the Book Again.</string>
+
+</resources>
