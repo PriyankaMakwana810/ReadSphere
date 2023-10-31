@@ -4,24 +4,25 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tridya.ebookhaven.database.table.FavoriteBookList
+import com.tridya.ebookhaven.database.table.BookListModel
 import com.tridya.ebookhaven.databinding.ItemBookBinding
+import com.tridya.ebookhaven.models.book.BookInfo
 import com.tridya.ebookhaven.utils.GlideUtils
 
 class FavoritesAdapter(
-    private val list: ArrayList<FavoriteBookList> = arrayListOf(),
+    private val list: ArrayList<BookListModel> = arrayListOf(),
     val listener: onFavoriteItemClick,
 ) :
     RecyclerView.Adapter<FavoritesAdapter.HomeViewHolder>() {
 
-    fun addList(list: List<FavoriteBookList>?) {
+    fun addList(list: List<BookListModel>?) {
         val prevSize = this.list.size
         val tempList = if (list.isNullOrEmpty()) arrayListOf() else list
         this.list.addAll(tempList)
         notifyItemRangeInserted(prevSize, this.list.size)
     }
 
-    fun setList(list: List<FavoriteBookList>?) {
+    fun setList(list: List<BookListModel>?) {
         clearList()
         val tempList = if (list.isNullOrEmpty()) arrayListOf() else list
         this.list.addAll(tempList)
@@ -35,16 +36,16 @@ class FavoritesAdapter(
 
     class HomeViewHolder(val binding: ItemBookBinding, val mContext: Context) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(data: FavoriteBookList) {
+        fun bind(data: BookListModel) {
             GlideUtils(mContext).cornerRadius(16)
                 .loadImage(data.imagejpeg, binding.imgCover)
             /*     Picasso.get().load(data.formats.imagejpeg)
                      .error(R.drawable.ic_book_black_24dp).into( binding.imgCover)*/
 
-            binding.tvTitle.text = data.title
-            binding.tvAuthor.text = data.authors
-            binding.tvLanguages.text = data.languages
-            binding.tvLocation.text = data.subjects
+            binding.tvTitle.text = data.bookTitle
+            binding.tvAuthor.text = data.bookAuthor
+            binding.tvLanguages.text = data.bookPublisher
+            binding.tvLocation.text = data.bookLanguage
         }
     }
 
@@ -68,6 +69,6 @@ class FavoritesAdapter(
     }
 
     interface onFavoriteItemClick {
-        fun onFavoriteBookSelected(book: FavoriteBookList)
+        fun onFavoriteBookSelected(bookData: BookListModel)
     }
 }

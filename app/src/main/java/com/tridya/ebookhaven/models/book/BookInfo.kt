@@ -7,6 +7,8 @@ data class BookInfo(
     val bookAuthor: String,
     val bookCover: File,
     val bookPath: String,
+    val bookLanguage: String,
+    val publisher: String,
     val importTime: String,
     val openTime: Int,
     val currentPage: Int,

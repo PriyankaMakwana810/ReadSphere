@@ -3,6 +3,7 @@ package com.tridya.ebookhaven.database.table
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.File
 import java.io.Serializable
 
 @Entity(tableName = "BookList")
@@ -11,10 +12,14 @@ data class BookListModel(
     var id: Int? = null,
     @ColumnInfo("BookTitle")
     var bookTitle: String? = null,
-    @ColumnInfo("Author")
+    @ColumnInfo("BookAuthor")
     var bookAuthor: String? = null,
     @ColumnInfo("BookPath")
     var bookPath: String? = null,
+    @ColumnInfo("BookLanguage")
+    var bookLanguage: String? = null,
+    @ColumnInfo("Publisher")
+    var bookPublisher: String? = null,
     @ColumnInfo(name = "TotalPages")
     var totalPages: Int? = 0,
     @ColumnInfo(name = "IsBookLock")
@@ -27,8 +32,8 @@ data class BookListModel(
     var lastOpenedPage: Int? = 0,
     @ColumnInfo(name = "LastOpenedPosition")
     var lastOpenedPosition: Int? = 0,
-    @ColumnInfo(name = "BookId")
-    var bookId: Int? = 0,
+    @ColumnInfo(name = "IsBookFavorite")
+    var isBookFavorite: Boolean? = false,
     @ColumnInfo("CoverImage")
     val imagejpeg: String?,
     @ColumnInfo(name = "created_at")

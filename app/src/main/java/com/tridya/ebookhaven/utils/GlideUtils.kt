@@ -17,7 +17,6 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.tridya.ebookhaven.R
-import jp.wasabeef.glide.transformations.BlurTransformation
 import jp.wasabeef.glide.transformations.CropCircleWithBorderTransformation
 import jp.wasabeef.glide.transformations.CropSquareTransformation
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
@@ -78,12 +77,6 @@ class GlideUtils(private val context: Context) {
         return this
     }
 
-    fun blur(radius: Int = 25): GlideUtils {
-        val radiusValue = if (radius <= 0) 1 else radius
-//        options.transform(BlurTransformation(radiusValue))
-        transformations.add(MultiTransformation(BlurTransformation(radiusValue)))
-        return this
-    }
 
     fun size(height: Int = Target.SIZE_ORIGINAL, width: Int = Target.SIZE_ORIGINAL): GlideUtils {
         options.override(width, height)

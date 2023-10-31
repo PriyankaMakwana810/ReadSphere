@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tridya.ebookhaven.R
 import com.tridya.ebookhaven.databinding.ItemBookBinding
 import com.tridya.ebookhaven.models.book.BookInfo
 import com.tridya.ebookhaven.utils.GlideUtils
@@ -37,8 +38,11 @@ class HomeAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(data: BookInfo) {
             GlideUtils(mContext).cornerRadius(16)
-                .loadImage(data.bookCover, binding.imgCover)
+                .loadImage(data.bookCover,binding.imgCover)
             binding.tvTitle.text = data.bookTitle
+            binding.tvAuthor.text = data.bookAuthor
+            binding.tvLanguages.text = data.bookLanguage
+            binding.tvLocation.text = binding.root.context.getString(R.string.publisher, data.publisher)
         }
     }
 

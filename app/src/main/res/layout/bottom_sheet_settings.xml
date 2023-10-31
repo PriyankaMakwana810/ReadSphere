@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rounded_bottomsheet"
+    android:orientation="vertical"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingVertical="8dp"
+            android:text="@string/background"
+            android:textAlignment="textStart"
+            android:textColor="#CC000000"
+            android:textSize="14sp" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/bgWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"
+            android:src="@drawable/v_ic_white_bg" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/bgGray"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"
+            android:src="@drawable/v_ic_grey_bg" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/bgBlack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1"
+            android:src="@drawable/v_ic_black_bg" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F2F2F2" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="8dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgBrightnessUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:padding="4dp"
+            android:src="@drawable/v_ic_brightness_up" />
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/seekBarBrightness"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="8dp"
+            android:layout_weight="1"
+            android:max="100"
+            android:padding="4dp"
+            android:progressTint="@color/theme_primary"
+            android:rotationY="180"
+            android:splitTrack="false"
+            android:thumb="@drawable/v_ic_custom_thumb_settings" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgBrightnessDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@id/seekBarBrightness"
+            android:padding="4dp"
+            android:src="@drawable/v_ic_brightness_down" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/seekLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="8dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgFontUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:padding="4dp"
+            android:src="@drawable/v_ic_font_big" />
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/seekBarFont"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="8dp"
+            android:layout_weight="1"
+            android:max="100"
+            android:padding="4dp"
+            android:progressTint="@color/theme_primary"
+            android:rotationY="180"
+            android:splitTrack="false"
+            android:thumb="@drawable/v_ic_custom_thumb_settings" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgFontDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imgBrightnessDown"
+            android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@id/seekBarFont"
+            android:padding="4dp"
+            android:src="@drawable/v_ic_font_small" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F2F2F2" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingBottom="20dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btnFontSelection"
+            style="@style/settingsButtonStyle"
+            android:paddingVertical="12dp"
+            android:text="@string/font_selection" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btnReadingOptions"
+            style="@style/settingsButtonStyle"
+            android:paddingVertical="12dp"
+            android:text="@string/reading_options" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btnMyMarkings"
+            style="@style/settingsButtonStyle"
+            android:paddingVertical="12dp"
+            android:text="@string/my_markings" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btnAdvanceSettings"
+            style="@style/settingsButtonStyle"
+            android:paddingVertical="12dp"
+            android:text="@string/advanced_settings" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

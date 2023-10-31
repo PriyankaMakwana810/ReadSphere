@@ -13,13 +13,11 @@ import androidx.room.Room
 import com.tridya.ebookhaven.R
 import com.tridya.ebookhaven.database.Database
 import com.tridya.ebookhaven.database.dao.BookListDao
-import com.tridya.ebookhaven.database.dao.FavoriteBookListDao
 
 open class BaseFragment : Fragment() {
     lateinit var mContext: Context
     lateinit var mActivity: Activity
     lateinit var bookListDao: BookListDao
-    lateinit var favoriteBookListDao: FavoriteBookListDao
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -35,7 +33,6 @@ open class BaseFragment : Fragment() {
             mContext, Database::class.java, ROOM_DB
         ).allowMainThreadQueries().build()
         bookListDao = db.bookDao()
-        favoriteBookListDao = db.favoriteBooksDao()
 
     }
 
@@ -46,6 +43,7 @@ open class BaseFragment : Fragment() {
     fun showToastLong(message: String?) {
         Toast.makeText(mContext, message, Toast.LENGTH_LONG).show()
     }
+
     @JvmOverloads
     fun setUpToolbarWithBackArrow(strTitle: String? = null, isBackArrow: Boolean = true) {
         val toolbar = view?.findViewById<Toolbar>(R.id.toolbar)

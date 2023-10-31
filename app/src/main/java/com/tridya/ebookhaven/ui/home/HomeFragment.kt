@@ -15,9 +15,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tridya.ebookhaven.BuildConfig
 import com.tridya.ebookhaven.R
+import com.tridya.ebookhaven.activities.EpubViewer
 import com.tridya.ebookhaven.base.BaseFragment
 import com.tridya.ebookhaven.databinding.FragmentHomeBinding
 import com.tridya.ebookhaven.models.book.BookInfo
@@ -41,7 +43,7 @@ class HomeFragment : BaseFragment(), HomeAdapter.onItemClick {
     private var findTitle = FindTitle()
     private var findAuthor = FindAuthor()
     private var findCover = FindCover()
-    private var bookList: ArrayList<BookInfo>? = null
+    val bookList = mutableListOf<BookInfo>()
 
     private var REQUEST_PERMISSIONS = 1
     var file: File? = null
@@ -70,8 +72,7 @@ class HomeFragment : BaseFragment(), HomeAdapter.onItemClick {
         binding.toolBar.tvTitle.text = getString(R.string.recent_books)
 
         binding.toolBar.ivFavorites.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putBoolean("showFavorite", true)
+            findNavController().navigate(R.id.favoritesFragment)
         }
     }
 
@@ -98,21 +99,11 @@ class HomeFragment : BaseFragment(), HomeAdapter.onItemClick {
                 binding.llNothingError.visible()
             } else {
                 adapter.clearList()
-                adapter.setList(bookList)
+                adapter.addList(bookList)
             }
         }
     }
 
-    /*override fun onBookSelected(book: Book) {
-        BookStore.setBook(book)
-//        val intent = Intent(activity, BookInfoActivity::class.java)
-//        intent.putExtra("BookId", book.id)
-//        intent.putExtra("BookTitle",book.title)
-//        intent.putExtra("BookEpubFile", book.formats.applicationepubzip)
-//        intent.putExtra("Book",book)
-//        this.startActivity(intent)
-    }
-    */
     private fun storagePermission(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             true
@@ -122,6 +113,7 @@ class HomeFragment : BaseFragment(), HomeAdapter.onItemClick {
             ) == PackageManager.PERMISSION_GRANTED
         }
     }
+
 
     @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(
@@ -205,9 +197,20 @@ class HomeFragment : BaseFragment(), HomeAdapter.onItemClick {
 
             bitmap = null
 
-            findTitle = FindTitle()
             val title: String = findTitle.FindTitle1(fileEpub.absolutePath)
             val author: String = findAuthor.FindAuthor1(fileEpub.absolutePath)
+            var publisher = ""
+            try {
+                publisher = findTitle.FindPublisher(fileEpub.absolutePath)
+            } catch (e: Exception) {
+                publisher = "N/A"
+            }
+            var language = ""
+            try {
+                language = findTitle.FindLanguage(fileEpub.absolutePath)
+            } catch (e: Exception) {
+                language = "N/A"
+            }
             val imageName = "$title.jpeg"
             var imageItem = File(fileImages, imageName)
             if (!imageItem.exists()) {
@@ -219,18 +222,29 @@ class HomeFragment : BaseFragment(), HomeAdapter.onItemClick {
                     val fileNull = File("null")
                     imageItem = fileNull
                 }
-                val importTime = SimpleDateFormat(
-                    "yyyyMMdd_HHmmss", Locale.US
-                ).format(Calendar.getInstance().time)
-                val bookInfo =
-                    BookInfo(title, author, imageItem, fileEpub.absolutePath, importTime, 0, 0, 0)
-                Log.e("EPUB File list", "This is book info: $bookInfo")
-                if (fileOutputStreamImages != null) {
-                    fileOutputStreamImages!!.flush()
-                    fileOutputStreamImages!!.close()
-                }
-                bookList?.add(bookInfo)
-                Log.e("TAG= list data", "addEpubBookDetails: $bookList. ")
+            }
+            val importTime = SimpleDateFormat(
+                "yyyyMMdd_HHmmss", Locale.US
+            ).format(Calendar.getInstance().time)
+            val bookInfo =
+                BookInfo(
+                    title,
+                    author,
+                    imageItem,
+                    fileEpub.absolutePath,
+                    language,
+                    publisher,
+                    importTime,
+                    0,
+                    0,
+                    0
+                )
+
+            bookList.add(bookInfo)
+            Log.e("EPUB File list", "This is book info: $bookInfo")
+            if (fileOutputStreamImages != null) {
+                fileOutputStreamImages!!.flush()
+                fileOutputStreamImages!!.close()
             }
         } catch (e: Exception) {
             Log.e("TAG", "addEpubBookDetails: ${e.message}")
@@ -239,7 +253,16 @@ class HomeFragment : BaseFragment(), HomeAdapter.onItemClick {
     }
 
     override fun onBookSelected(bookInfo: BookInfo) {
-
+        val intentEpubViewer = Intent(activity, EpubViewer::class.java)
+        intentEpubViewer.putExtra("title", bookInfo.bookTitle)
+        intentEpubViewer.putExtra("path", bookInfo.bookPath)
+        intentEpubViewer.putExtra("author", bookInfo.bookAuthor)
+        intentEpubViewer.putExtra("bookLanguage", bookInfo.bookLanguage)
+        intentEpubViewer.putExtra("publisher", bookInfo.publisher)
+        intentEpubViewer.putExtra("bookCoverImage", bookInfo.bookCover.toString())
+        intentEpubViewer.putExtra("currentPage", bookInfo.currentPage)
+        intentEpubViewer.putExtra("currentScroll", bookInfo.currentScroll)
+        this.startActivity(intentEpubViewer)
     }
 
 }

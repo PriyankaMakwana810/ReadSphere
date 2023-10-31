@@ -4,10 +4,13 @@
     <color name="white">#FFFFFFFF</color>
 
 <!--    app theme colors-->
+    <color name="color_brown_40732B21">#40A33B2E</color>
     <color name="theme_primary">#732B21</color>
     <color name="theme_light">#A0732B21</color>
     <color name="theme_secondary">#99A33B2E</color>
+    <color name="theme_secondary_light">#77A33B2E</color>
     <color name="theme_light_EBE7E7">#40EBE7E7</color>
     <color name="color_theme_light">#F0F0F0</color>
+    <color name="color_progress">#40EBE7E7</color>
 
 </resources>
