@@ -14,13 +14,13 @@ interface BookListDao {
     @Delete
     fun deleteBook(bookListModel: BookListModel)
 
-    @Query("SELECT * FROM BookList")
+    @Query("SELECT * FROM BookList ORDER BY id DESC")
     fun getAllBookList(): List<BookListModel>
 
     @Query("Select * from BookList WHERE BookTitle =:bookTitle")
     fun getBookData(bookTitle: String?): BookListModel
 
-    @Query("SELECT * FROM BookList WHERE IsBookFavorite")
+    @Query("SELECT * FROM BookList WHERE IsBookFavorite ORDER BY id DESC")
     fun getFavoriteBooks(): List<BookListModel>
 
     @Query("UPDATE BookList Set IsBookFavorite =:isBookFavorite WHERE BookTitle =:bookTitle ")

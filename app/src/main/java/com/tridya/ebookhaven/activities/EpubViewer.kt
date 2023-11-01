@@ -1186,10 +1186,8 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
 
         if (quoteList.isEmpty()) {
             highlightsBinding.ivDeleteAll.visibility = View.GONE
-            highlightsBinding.llError.visibility = View.VISIBLE
         } else {
             highlightsBinding.ivDeleteAll.visibility = View.VISIBLE
-            highlightsBinding.llError.visibility = View.GONE
         }
     }
 

@@ -83,7 +83,7 @@
                         android:layout_weight="1"
                         android:autoLink="email"
                         android:text="@string/info_tridhyatech_com"
-                        android:textColor="@color/theme_primary"
+                        android:textColorLink="@color/theme_primary"
                         app:fontFamily="@font/heebo_bold" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -111,6 +111,57 @@
                         tools:text="1.0" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sources_to_download_e_books"
+                        android:textColor="@color/theme_secondary"
+                        app:fontFamily="@font/heebo_medium" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:autoLink="web"
+                        android:textColorLink="@color/theme_primary"
+                        android:text="@string/https_www_gutenberg_org"
+                        app:fontFamily="@font/heebo_bold"/>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:autoLink="web"
+                        android:textColorLink="@color/theme_primary"
+                        android:text="@string/https_www_obooko_com"
+                        app:fontFamily="@font/heebo_bold"/>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:autoLink="web"
+                        android:textColorLink="@color/theme_primary"
+                        android:text="@string/https_manybooks_net"
+                        app:fontFamily="@font/heebo_bold"/>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:autoLink="web"
+                        android:textColorLink="@color/theme_primary"
+                        android:text="@string/https_www_ebooksread_com"
+                        app:fontFamily="@font/heebo_bold"/>
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.core.widget.NestedScrollView>
 
@@ -120,6 +171,7 @@
             android:layout_marginBottom="4dp"
             android:autoLink="web"
             android:text="@string/www_tridhyatech_com"
+            android:textColorLink="@color/theme_primary"
             android:textStyle="bold" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>

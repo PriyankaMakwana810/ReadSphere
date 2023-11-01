@@ -96,5 +96,10 @@
     <string name="publisher">Publisher: %1$s</string>
     <string name="pages">Pages:\n%1$s</string>
     <string name="publisher_">Publisher:\n%1$s</string>
+    <string name="sources_to_download_e_books">Sources to Download e-Books:</string>
+    <string name="https_www_gutenberg_org">https://www.gutenberg.org/</string>
+    <string name="https_www_obooko_com">https://www.obooko.com/</string>
+    <string name="https_manybooks_net">https://manybooks.net/</string>
+    <string name="https_www_ebooksread_com">https://www.ebooksread.com/</string>
 
 </resources>

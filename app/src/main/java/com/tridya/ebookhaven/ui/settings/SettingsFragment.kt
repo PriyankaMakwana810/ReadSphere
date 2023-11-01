@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
+import com.tridya.ebookhaven.BuildConfig
 import com.tridya.ebookhaven.R
 import com.tridya.ebookhaven.base.BaseFragment
 import com.tridya.ebookhaven.databinding.FragmentSettingsBinding
@@ -19,7 +20,6 @@ class SettingsFragment : BaseFragment() {
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentSettingsBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -39,7 +39,7 @@ class SettingsFragment : BaseFragment() {
         binding.toolBar.ivFavorites.gone()
         binding.toolBar.tvTitle.text = requireContext().getString(R.string.settings)
 
-//        binding.tvVersion.text = "v${BuildConfig.VERSION_NAME}"
+        binding.tvVersion.text = "v${BuildConfig.VERSION_NAME}"
         binding.ivAppIcon.setImageResource(R.mipmap.ic_launcher)
 
     }

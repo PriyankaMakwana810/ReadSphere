@@ -41,6 +41,7 @@
             android:id="@+id/switchScreenRotation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:thumbTint="@color/theme_primary"
             android:checked="true" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -64,6 +65,7 @@
             android:id="@+id/switchBrowsing"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:thumbTint="@color/theme_primary"
             android:checked="true" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -181,6 +183,7 @@
             android:id="@+id/switchBookLock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:thumbTint="@color/theme_primary"
             android:padding="4dp" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>

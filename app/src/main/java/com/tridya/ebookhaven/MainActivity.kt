@@ -1,30 +1,12 @@
 package com.tridya.ebookhaven
 
-import android.Manifest
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.Settings
-import android.util.Log
-import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import com.tridya.ebookhaven.base.BaseActivity
 import com.tridya.ebookhaven.databinding.ActivityMainBinding
-import com.tridya.ebookhaven.models.book.BookInfo
-import com.tridya.ebookhaven.utils.FindTitle
 import com.tridya.ebookhaven.utils.visible
-import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStreamWriter
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 class MainActivity : BaseActivity(), NavController.OnDestinationChangedListener {
 

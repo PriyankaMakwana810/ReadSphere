@@ -13,11 +13,13 @@ import androidx.room.Room
 import com.tridya.ebookhaven.R
 import com.tridya.ebookhaven.database.Database
 import com.tridya.ebookhaven.database.dao.BookListDao
+import com.tridya.ebookhaven.dialogs.ProgressDialog
 
 open class BaseFragment : Fragment() {
     lateinit var mContext: Context
     lateinit var mActivity: Activity
     lateinit var bookListDao: BookListDao
+    private var progressDialog: ProgressDialog? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -42,6 +44,19 @@ open class BaseFragment : Fragment() {
 
     fun showToastLong(message: String?) {
         Toast.makeText(mContext, message, Toast.LENGTH_LONG).show()
+    }
+
+    fun showProgressbar() {
+        hideProgressbar()
+        if (progressDialog == null) {
+            progressDialog = ProgressDialog(requireContext())
+        }
+        progressDialog?.show()
+    }
+
+
+    fun hideProgressbar() {
+        progressDialog?.dismiss()
     }
 
     @JvmOverloads

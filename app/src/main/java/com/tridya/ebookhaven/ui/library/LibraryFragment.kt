@@ -1,130 +1,278 @@
 package com.tridya.ebookhaven.ui.library
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tridya.ebookhaven.BuildConfig
 import com.tridya.ebookhaven.R
+import com.tridya.ebookhaven.activities.EpubViewer
 import com.tridya.ebookhaven.base.BaseFragment
-import com.tridya.ebookhaven.database.table.BookListModel
 import com.tridya.ebookhaven.databinding.FragmentLibraryBinding
-import com.tridya.ebookhaven.ui.home.adapter.LibraryAdapter
+import com.tridya.ebookhaven.models.book.BookInfo
+import com.tridya.ebookhaven.ui.home.adapter.HomeAdapter
+import com.tridya.ebookhaven.utils.FindAuthor
+import com.tridya.ebookhaven.utils.FindCover
+import com.tridya.ebookhaven.utils.FindTitle
 import com.tridya.ebookhaven.utils.gone
 import com.tridya.ebookhaven.utils.visible
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
-import java.util.Arrays
-import java.util.Objects
+import java.io.FileOutputStream
+import java.io.OutputStreamWriter
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
-class LibraryFragment : BaseFragment(), LibraryAdapter.onItemClick {
+class LibraryFragment : BaseFragment(), HomeAdapter.onItemClick {
     private lateinit var binding: FragmentLibraryBinding
+    private val adapter by lazy { HomeAdapter(listener = this) }
+    private var findTitle = FindTitle()
+    private var findAuthor = FindAuthor()
+    private var findCover = FindCover()
+    val bookList = mutableListOf<BookInfo>()
+
+    private var REQUEST_PERMISSIONS = 1
+    var file: File? = null
+    private var fileImages: File? = null
+
+    private var fileOutputStream: FileOutputStream? = null
+    private var fileOutputStreamImages: FileOutputStream? = null
+    private var writer: OutputStreamWriter? = null
+
+    private var bitmap: Bitmap? = null
     private var layoutManager: LinearLayoutManager? = null
-    private lateinit var bookList: ArrayList<BookListModel>
-    var files: Array<File>? = null
-    val DOWNLOAD_DIR = "eBookHavenEbooks"
-    lateinit var downloadedAdapter: LibraryAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentLibraryBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val onBackPressedCallback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-//                activity?.onBackPressed()
-                findNavController().navigate(R.id.fragmentHome)
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            onBackPressedCallback
-        )
-//        binding.toolBar.searchView.gone()
-        binding.toolBar.tvTitle.text = getString(R.string.library)
-        binding.toolBar.ivFavorites.gone()
-        binding.toolBar.ivBack.setOnClickListener {
-            findNavController().navigateUp()
-        }
-
-        layoutManager = LinearLayoutManager(requireContext())
-        binding.rvBooks.layoutManager = layoutManager
-        bookList = bookListDao.getAllBookList() as ArrayList<BookListModel>
-        if (bookList.isEmpty()) {
-            binding.rvBooks.gone()
-            binding.tvNothing.visible()
-        } else {
-            downloadedAdapter = LibraryAdapter(bookList, this)
-            binding.rvBooks.adapter = downloadedAdapter
+        checkPermissions()
+        binding.toolBar.tvTitle.text = getString(R.string.all_books)
+        binding.toolBar.ivFavorites.setOnClickListener {
+            findNavController().navigate(R.id.favoritesFragment)
         }
     }
 
-    override fun onBookSelected(book: BookListModel) {
-        val file = File(book.bookPath.toString())
-        if (file.exists()) {
-            /* val intentEpubViewer = Intent(activity, EpubViewer::class.java)
- //                    intentEpubViewer.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-             intentEpubViewer.putExtra("title", book.bookTitle)
-             intentEpubViewer.putExtra("path", book.bookPath)
-             intentEpubViewer.putExtra("author", book.bookAuthor)
-             intentEpubViewer.putExtra("bookCoverImage", book.imagejpeg)
-             intentEpubViewer.putExtra("currentPage", book.lastOpenedPage)
-             intentEpubViewer.putExtra("currentScroll", book.lastOpenedPosition)
-             intentEpubViewer.putExtra("BookId", book.bookId)
-             this.startActivity(intentEpubViewer)*/
-
+    private fun checkPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
+            checkPermissionForAndroid11AndAbove()
+        } else if (!storagePermission()) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                REQUEST_PERMISSIONS
+            )
         } else {
-            /* MessageDialog(requireContext()).setTitle(getString(R.string.file_not_found))
-                 .setMessage(getString(R.string.book_may_be_deleted_from_internal_storage_please_re_download_book))
-                 .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
-                     dialog.dismiss()
-                 }.show()*/
-            bookListDao.deleteBook(book)
-            downloadedAdapter.notifyItemRemoved(bookList.indexOf(book))
-            bookList.remove(book)
-            if (bookList.isEmpty()) {
-                binding.tvNothing.visible()
+            loadBookData()
+        }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun loadBookData() {
+        showProgressbar()
+        GlobalScope.launch(Dispatchers.IO) {
+            val epubFiles = getEpubFiles()
+            for (epub in epubFiles) {
+                addEpubBookDetails(epub)
+            }
+            withContext(Dispatchers.Main) {
+                if (isAdded){
+                    layoutManager = LinearLayoutManager(requireContext())
+                    binding.rvBooks.layoutManager = layoutManager
+                    binding.rvBooks.adapter = adapter
+                    if (bookList.isEmpty()) {
+                        binding.rvBooks.gone()
+                        binding.llNothingError.visible()
+                    } else {
+                        adapter.clearList()
+                        adapter.addList(bookList)
+                        hideProgressbar()
+                    }
+                }
+
             }
         }
     }
 
-    private fun setData() {
-        val path =
-            Objects.requireNonNull(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)).absolutePath + File.separator + DOWNLOAD_DIR
-        Log.e("Files", "Path: $path")
-        val directory = File(path)
-        files = directory.listFiles()
+    private fun storagePermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            true
+        } else {
+            ContextCompat.checkSelfPermission(
+                requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray,
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_PERMISSIONS) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    if (!Environment.isExternalStorageManager()) {
+                        checkPermissionForAndroid11AndAbove()
+                        return
+                    }
+                }
+//                ListBooksNCheckPreferences()
+                val epubFiles = getEpubFiles()
+                Log.e("EPUB File list", "onRequestPermissionsResult: $epubFiles")
+            } else {
+                showToastShort("Permission not Granted!!")
+//                finish()
+            }
+        }
+    }
+
+    private fun checkPermissionForAndroid11AndAbove() {
+        try {
+            val uri = Uri.parse("package:" + BuildConfig.APPLICATION_ID)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri)
+                startActivity(intent)
+            }
+        } catch (ex: Exception) {
+            showToastLong("Permission not Granted!!")
+//            finish()
+        }
+    }
+
+    private fun getEpubFiles(): List<File> {
+        val externalStorageDirectory = Environment.getExternalStorageDirectory()
+        val epubFiles = mutableListOf<File>()
+
+        if (externalStorageDirectory != null && externalStorageDirectory.exists()) {
+            scanForEpubFiles(externalStorageDirectory, epubFiles)
+        } else {
+            showToastShort("Permission not Granted!!")
+        }
+        return epubFiles
+    }
+
+    private fun scanForEpubFiles(directory: File, epubFiles: MutableList<File>) {
+        val files = directory.listFiles()
         if (files != null) {
-            Arrays.sort(files!!) { o1, o2 ->
-                if ((o1 as File).lastModified() > (o2 as File).lastModified()) {
-                    -1
-                } else if (o1.lastModified() < o2.lastModified()) {
-                    +1
+            for (file in files) {
+                if (file.isDirectory) {
+                    // Recursively search directories
+                    scanForEpubFiles(file, epubFiles)
                 } else {
-                    0
+                    if (file.name.endsWith(".epub", ignoreCase = true)) {
+                        // If the file has the .epub extension, add it to the list
+                        epubFiles.add(file)
+//                        addEpubBookDetails(file)
+                    }
                 }
             }
         }
-        setDataToRecyclerView()
     }
 
-    private fun setDataToRecyclerView() {
-        if (files != null && files!!.isNotEmpty()) {
-            binding.rvBooks.visibility = View.VISIBLE
-            binding.tvNothing.visibility = View.GONE
-            binding.rvBooks.layoutManager = GridLayoutManager(mActivity, 3)
-        } else {
-            binding.rvBooks.visibility = View.GONE
-            binding.tvNothing.visibility = View.VISIBLE
+    private fun addEpubBookDetails(fileEpub: File) {
+        try {
+            file = File(requireActivity().filesDir, "bookList.txt")
+            fileImages = File(requireActivity().filesDir.toString() + File.separator + "bookImages")
+            if (!file!!.exists()) {
+                file!!.createNewFile()
+            }
+            fileImages!!.mkdirs()
+
+            fileOutputStream = FileOutputStream(file, false)
+            writer = OutputStreamWriter(fileOutputStream)
+
+            bitmap = null
+
+            val title: String = findTitle.FindTitle1(fileEpub.absolutePath)
+            val author: String = findAuthor.FindAuthor1(fileEpub.absolutePath)
+            val publisher = try {
+                findTitle.FindPublisher(fileEpub.absolutePath)
+            } catch (e: Exception) {
+                "N/A"
+            }
+            val language = try {
+                findTitle.FindLanguage(fileEpub.absolutePath)
+            } catch (e: Exception) {
+                "N/A"
+            }
+            val imageName = "$title.jpeg"
+            var imageItem = File(fileImages, imageName)
+            if (!imageItem.exists()) {
+                bitmap = findCover.FindCoverRef(fileEpub.absolutePath) as Bitmap
+                if (bitmap != null) {
+                    fileOutputStreamImages = FileOutputStream(imageItem)
+                    bitmap!!.compress(Bitmap.CompressFormat.JPEG, 90, fileOutputStreamImages!!)
+                } else {
+                    val fileNull = File("null")
+                    imageItem = fileNull
+                }
+            }
+            val importTime = SimpleDateFormat(
+                "yyyyMMdd_HHmmss", Locale.US
+            ).format(Calendar.getInstance().time)
+            val bookInfo =
+                BookInfo(
+                    title,
+                    author,
+                    imageItem,
+                    fileEpub.absolutePath,
+                    language,
+                    publisher,
+                    importTime,
+                    0,
+                    0,
+                    0
+                )
+
+            bookList.add(bookInfo)
+            Log.e("EPUB File list", "This is book info: $bookInfo")
+            if (fileOutputStreamImages != null) {
+                fileOutputStreamImages!!.flush()
+                fileOutputStreamImages!!.close()
+            }
+        } catch (e: Exception) {
+            Log.e("TAG", "addEpubBookDetails: ${e.message}")
         }
+
+    }
+
+    override fun onBookSelected(bookInfo: BookInfo) {
+        val intentEpubViewer = Intent(activity, EpubViewer::class.java)
+        intentEpubViewer.putExtra("title", bookInfo.bookTitle)
+        intentEpubViewer.putExtra("path", bookInfo.bookPath)
+        intentEpubViewer.putExtra("author", bookInfo.bookAuthor)
+        intentEpubViewer.putExtra("bookLanguage", bookInfo.bookLanguage)
+        intentEpubViewer.putExtra("publisher", bookInfo.publisher)
+        intentEpubViewer.putExtra("bookCoverImage", bookInfo.bookCover.toString())
+        intentEpubViewer.putExtra("currentPage", bookInfo.currentPage)
+        intentEpubViewer.putExtra("currentScroll", bookInfo.currentScroll)
+        this.startActivity(intentEpubViewer)
     }
 }
