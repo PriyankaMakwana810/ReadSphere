@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "eBookHaven"
+rootProject.name = "ReadSphere"
 include(":app")
  

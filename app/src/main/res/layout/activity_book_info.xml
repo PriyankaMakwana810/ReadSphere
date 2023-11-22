@@ -7,8 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bg_gradient"
-        android:orientation="vertical"
-        tools:context="com.tridhya.bookReader.ebookhaven.activities.BookInfoActivity">
+        android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
@@ -24,15 +23,16 @@
                     android:id="@+id/ivBack"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
                     android:background="?selectableItemBackground"
                     android:paddingHorizontal="4dp"
-                    android:layout_marginStart="8dp"
                     android:src="@drawable/ic_back_arrow" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginHorizontal="18dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/young_serif_regular"
@@ -40,16 +40,15 @@
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:layout_gravity="center_vertical"
                     tools:text="@string/app_name" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivFavorites"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_marginEnd="8dp"
                     android:background="?selectableItemBackground"
                     android:paddingHorizontal="4dp"
-                    android:layout_marginEnd="8dp"
                     android:src="@drawable/selector_favorites" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -181,9 +180,9 @@
                     android:background="@drawable/bg_rounded_btn"
                     android:fontFamily="@font/heebo_medium"
                     android:padding="14dp"
-                    android:visibility="gone"
                     android:text="@string/download_book"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tvPreview"

@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.tridya.ebookhaven"
+    namespace = "com.tridya.readsphere"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.tridya.ebookhaven"
+        applicationId = "com.tridya.readsphere"
         minSdk = 28
         targetSdk = 34
         versionCode = 1

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/fragmentHome"
-        android:name="com.tridya.ebookhaven.ui.home.HomeFragment"
+        android:name="com.tridya.readsphere.ui.home.HomeFragment"
         android:label="HomeFragment"
         tools:layout="@layout/fragment_home">
 
@@ -15,18 +15,18 @@
 
     <fragment
         android:id="@+id/fragmentLibrary"
-        android:name="com.tridya.ebookhaven.ui.library.LibraryFragment"
+        android:name="com.tridya.readsphere.ui.library.LibraryFragment"
         android:label="LibraryFragment"
         tools:layout="@layout/fragment_library" />
 
     <fragment
         android:id="@+id/fragmentSettings"
-        android:name="com.tridya.ebookhaven.ui.settings.SettingsFragment"
+        android:name="com.tridya.readsphere.ui.settings.SettingsFragment"
         android:label="SettingsFragment"
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/favoritesFragment"
-        android:name="com.tridya.ebookhaven.ui.home.FavoritesFragment"
+        android:name="com.tridya.readsphere.ui.home.FavoritesFragment"
         android:label="FavoritesFragment"
         tools:layout="@layout/fragment_favorites"/>
 </navigation>
