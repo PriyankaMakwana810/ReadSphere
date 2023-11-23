@@ -19,7 +19,7 @@ class HighlightedText(private val context: Context, private val webView: CustomW
     private val quoteList: MutableList<Quote> = mutableListOf()
 
     fun getQuotes(bookTitle: String): MutableList<Quote> {
-        quoteDao.getAllQuotes().observeForever(Observer { quotes ->
+        quoteDao.getAllQuotes(bookTitle).observeForever(Observer { quotes ->
             quoteList.clear()
             quoteList.addAll(quotes)
         })

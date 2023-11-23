@@ -13,7 +13,7 @@ class ChaptersAdapter(private val pages: List<String>) :
     private var clickListener: OnItemClickListener? = null
 
     interface OnItemClickListener {
-        fun onItemClick(pageUrl: String?)
+        fun onChapterItemClick(pageUrl: String?)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener?) {
@@ -58,7 +58,7 @@ class ChaptersAdapter(private val pages: List<String>) :
                     val position = adapterPosition
                     if (position != RecyclerView.NO_POSITION) {
                         val pageUrl = pages[position]
-                        clickListener!!.onItemClick(pageUrl)
+                        clickListener!!.onChapterItemClick(pageUrl)
                     }
                 }
             }

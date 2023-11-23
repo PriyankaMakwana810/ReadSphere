@@ -67,6 +67,7 @@ import android.view.View as View1
 
 class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
     HighlightAdapter.OnHighlightClickListener {
+
     private lateinit var binding: ActivityEpubViewerBinding
     private lateinit var settingsBinding: BottomSheetSettingsBinding
     private lateinit var advanceSettingsBinding: BottomSheetAdvanceSettingsBinding
@@ -90,7 +91,7 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
     private var searchViewLongClick = false
     var seeking = false
 
-    var autoScrollHandler = Handler()
+    var autoScrollHandler = Handler(Looper.getMainLooper())
     var currentScrollSpeed = 1
     private var bookId = 0
 
@@ -141,11 +142,6 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
         loadWebViewSettings()
         //Save Quotes (load highlighted quotes)
         highlightedText = HighlightedText(this, webView)
-//        try {
-//            saveQuote = SaveQuote(webView, quoteList)
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//        }
 
         seekbarChangeListener()
 
@@ -229,7 +225,6 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
 
         //Save Quotes Get Quotes
         try {
-//            saveQuote!!.getQuotes(bookTitle)
             highlightedQuoteList = highlightedText.getQuotes(bookTitle!!)
         } catch (e: IOException) {
             e.printStackTrace()
@@ -437,9 +432,11 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
             }
 
             settingsBinding.btnAdvanceSettings.setOnClickListener {
+                // Dismiss the current dialog and show the advanced settings dialog
                 dialogSettingsBottomSheet!!.dismiss()
                 dialogAdvanceSettingsBottomSheet!!.show()
 
+                // Set the initial state of the screen rotation switch
                 advanceSettingsBinding.switchScreenRotation.isChecked = switchState
 
                 val savedLineHeight = session?.userPref?.lineSpacing
@@ -618,35 +615,6 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
                 false
             }
         binding.tvBookHeading.setOnClickListener { finish() }
-        for (i in pages.indices) {
-            val firstSplittedLink =
-                pages[i].split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            val secondSplittedLink =
-                firstSplittedLink[firstSplittedLink.size - 1].split("\\.".toRegex())
-                    .dropLastWhile { it.isEmpty() }.toTypedArray()
-        }
-        /*        highlightsBinding.ivDeleteAll.setOnClickListener {
-                    val parentFile =
-                        File(Environment.getExternalStorageDirectory(), "eBookHaven Book Quotes")
-                    val file = File(parentFile, "$bookTitle Quote List.txt")
-                    if (file.exists()) {
-                        try {
-                            Log.e("TAG", "onClick: $file")
-                            if (file.delete()) {
-                                showToastShort("HighlightedText of this Book deleted successfully")
-                            } else {
-                                showToastShort("HighlightedText of this Book can't delete.")
-                            }
-                        } catch (exception: Exception) {
-                            exception.printStackTrace()
-                            Log.e("TAG", "onClick: ${exception.message}")
-                        }
-                    }
-                    quoteList.clear()
-                    bookQuoteList.clear()
-                    reloadNavQuote()
-                    webView.reload()
-                }*/
         reloadNavQuote()
     }
 
@@ -690,7 +658,6 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
         webView.settings.allowFileAccess = true
         webView.settings.allowContentAccess = true
         webView.settings.defaultTextEncodingName = "utf-8"
-//        webView.settings.builtInZoomControls = true
         webView.setGestureDetector(GestureDetector(CustomeGestureDetector()))
         webView.setOnTouchListener(object : OnTouchListener {
             val MAX_CLICK_DURATION = 100
@@ -756,14 +723,11 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
                     "* { padding: 0px !important; letter-spacing: normal !important; max-width: none !important; }"
                 )
                 InjectCss(view, "* { font-family: " + session?.userPref?.font + " !important; }")
-                //                InjectCss(view, "* @font-face { font-family: " + getFromPreferences("font-family") + "; src: url(\"file:///android_res/font/miriam_libre_regular.ttf\"); } body { font-family: " + getFromPreferences("font-family") + ", sans-serif; }");
                 InjectCss(view, "* { font-size: " + session?.userPref?.fontSize + " !important; }")
-                //                InjectCss(view, "* { font-style: " + getFromPreferences("font-style") + " !important; }");
                 InjectCss(
                     view,
                     "* { font-weight: " + session?.userPref?.fontSize + " !important; }"
                 )
-                //                InjectCss(view, "* { text-align: " + getFromPreferences("text-align") + " !important; }");
                 InjectCss(
                     view,
                     "body { background: " + session?.userPref?.backgroundColor + " !important; }"
@@ -785,6 +749,7 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
                     view,
                     "img { display: block !important; width: 100% !important; height: auto !important; }"
                 )
+
                 try {
                     url = URLDecoder.decode(url, "UTF-8")
                 } catch (e: UnsupportedEncodingException) {
@@ -792,16 +757,16 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
                 }
                 if (pageNumber == pages.size) {
                     binding.llFinished.visible()
+                    binding.layoutRoot.gone()
                 } else {
                     binding.llFinished.gone()
+                    binding.layoutRoot.visible()
                 }
                 for (i in pages.indices) {
                     assert(url != null)
                     if (url!!.contains(pages[i])) {
                         pageNumber = pages.indexOf(pages[i])
                         if (pageNumber > -1) {
-                            val lastPage = (pages.size - 1).toString() + ""
-//                            binding.tvLastpage.text = lastPage
                             val pageNum = pageNumber.toString() + "/" + (pages.size - 1)
                             binding.tvCurrentPage.text = pageNum
                             if (!seeking) {
@@ -811,14 +776,12 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
                                         val anchor = finalUrl.split("#".toRegex())
                                             .dropLastWhile { it.isEmpty() }.toTypedArray()
                                         webView.loadUrl("javascript:document.getElementById(\"" + anchor[anchor.size - 1] + "\").scrollIntoView()")
-//                                        saveQuote!!.highlightQuote(pageNumber)
                                         highlightedText.highlightQuote(pageNumber)
                                         syncWebViewScrollSeekBar()
                                     }, 500)
                                 } else {
                                     webView.postDelayed({
                                         webView.scrollTo(0, webViewScrollAmount)
-//                                        saveQuote!!.highlightQuote(pageNumber)
                                         highlightedText.highlightQuote(pageNumber)
                                         syncWebViewScrollSeekBar()
                                     }, 500)
@@ -867,7 +830,6 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
                                 // Load the new page and highlight the quote after scrolling
                                 webView.loadUrl("file://" + pages[targetPage])
                                 webView.postDelayed({
-//                                    saveQuote!!.highlightQuote(pageNumber)
                                     highlightedText.highlightQuote(pageNumber)
                                     seeking = false
                                 }, 500)
@@ -901,20 +863,6 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
         super.onStop()
     }
 
-
-    /*private fun deleteRecursive(fileOrDirectory: File) {
-        //deletes all quotes (highlighted text of book)
-        if (fileOrDirectory.isDirectory) for (child in fileOrDirectory.listFiles()!!) deleteRecursive(
-            child
-        )
-        fileOrDirectory.delete()
-//                setData()
-        dialogHighlightsBottomSheet?.show()
-        quoteList.clear()
-        bookQuoteList.clear()
-
-    }*/
-
     private fun showEnterPasswordDialog() {
         val builder = AlertDialog.Builder(this)
         val dialogUnlockBookBinding = DialogUnlockBookBinding.inflate(LayoutInflater.from(this))
@@ -935,7 +883,6 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
             }
         }
         dialogUnlockBookBinding.ivClose.setOnClickListener {
-//            dialog.dismiss()
             finish()
         }
         dialogUnlockBookBinding.unlockBtn.setOnClickListener { v: View1? ->
@@ -1074,7 +1021,6 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
             override fun onAnimationStart(animation: Animator) {}
             override fun onAnimationEnd(animation: Animator) {
                 // Highlight the quote after scrolling to the target position
-//                saveQuote!!.highlightQuote(pageNumber)
                 highlightedText.highlightQuote(pageNumber)
             }
 
@@ -1090,38 +1036,30 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
     }
 
     //Reload Navigation View Quote
-    fun reloadNavQuote() {
-//        bookQuoteList.clear()
+    private fun reloadNavQuote() {
         highlightedQuoteList.clear()
         highlightedQuoteList = highlightedText.getQuotes(bookTitle!!)
     }
 
+    //    highlighted item clicked navigate to particular highlight
     override fun onHighlightClick(position: Int) {
-        for (j in highlightedQuoteList.indices) {
-            if (highlightedQuoteList[j].quoteText == position.toString()) {
-                webView.loadUrl(
-                    "file://" + pages[highlightedQuoteList[j].pageNumber.toString().toInt()]
-                )
-                webViewScrollAmount = highlightedQuoteList[j].webViewScrollY.toString().toInt()
-                webView.reload()
-            }
-        }
-
+        webView.loadUrl("file://" + pages[highlightedQuoteList[position].pageNumber.toString().toInt()])
+        webViewScrollAmount = highlightedQuoteList[position].webViewScrollY
+        dialogHighlightsBottomSheet!!.dismiss()
     }
 
-    //On Activity Stop
+    //    back pressed
     override fun onSupportNavigateUp(): Boolean {
         finish()
         return true
     }
 
-    override fun onItemClick(pageUrl: String?) {
-//        webView.loadUrl("file://" + pages.get(i));
+    //    on chapter item clicked
+    override fun onChapterItemClick(pageUrl: String?) {
         webView.loadUrl("file://$pageUrl")
         webViewScrollAmount = 0
         dialogChapterBottomSheet!!.dismiss()
     }
-
 
     // Function to set screen brightness
     private fun setBrightness(brightness: Int) {
@@ -1142,7 +1080,6 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
             mode.menu.findItem(15264685).setOnMenuItemClickListener { item: MenuItem? ->
                 try {
                     if (gQuote != "") {
-//                        saveQuote!!.addQuote(gQuote, bookTitle, pageNumber, webView.scrollY)
                         highlightedText.addQuote(gQuote, bookTitle!!, pageNumber, webView.scrollY)
                         highlightedText.highlightQuote(pageNumber)
                         reloadNavQuote()
@@ -1156,18 +1093,10 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
             mode.menu.findItem(45657841).setOnMenuItemClickListener { item: MenuItem? ->
                 if (session?.userPref?.backgroundColor == null) {
                     userPref!!.backgroundColor = "White"
-//                    sessionManager!!.saveUser(userPref)
                     session?.userPref = userPref
-
                 }
                 try {
                     if (gQuote != "") {
-                        /*   saveQuote!!.removeQuote(
-                               gQuote,
-                               bookTitle,
-                               0,
-                               session?.userPref?.backgroundColor
-                           )*/
                         highlightedText.removeQuote(
                             gQuote,
                             bookTitle!!,
@@ -1255,16 +1184,17 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
                             if (pageNumber < pages.size - 1) {
                                 pageNumber++
                                 binding.llFinished.gone()
+                                binding.layoutRoot.visible()
                                 webView.loadUrl("file://" + pages[pageNumber])
                                 binding.seekBar.progress =
                                     binding.seekBar.max * pageNumber / pages.size
                                 webViewScrollAmount = 0
                             } else {
                                 binding.llFinished.visible()
+                                binding.layoutRoot.gone()
                                 Handler(Looper.getMainLooper()).postDelayed({
-//                                    binding.layoutRoot.visibility = View.INVISIBLE
                                     finish()
-                                }, 1000)
+                                }, 3000)
                             }
                             return true
                         } else if (e2.x - e1.x > 150 && Math.abs(velocityX) > 1000) {
@@ -1288,13 +1218,15 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
                         ) {
                             if (pageNumber < pages.size - 1) {
                                 pageNumber++
-                                binding.llFinished.visibility = View1.GONE
+                                binding.llFinished.gone()
+                                binding.layoutRoot.visible()
                                 webView.loadUrl("file://" + pages[pageNumber])
                                 binding.seekBar.progress =
                                     binding.seekBar.max * pageNumber / pages.size
                                 webViewScrollAmount = 0
                             } else {
                                 binding.llFinished.visible()
+                                binding.layoutRoot.gone()
                                 Handler(Looper.getMainLooper()).postDelayed({
                                     finish()
                                 }, 1000)

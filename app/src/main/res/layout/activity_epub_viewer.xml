@@ -10,7 +10,8 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/layoutRoot">
 
         <com.tridya.readsphere.utils.CustomWebView
             android:id="@+id/custom_WebView"
@@ -230,15 +231,15 @@
         android:id="@+id/llFinished"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_gradient"
+        android:background="@color/theme_light_EBE7E7"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/img_finished_book" />
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:src="@drawable/img_book_finished" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
@@ -246,8 +247,9 @@
             android:layout_margin="20dp"
             android:text="@string/you_finished_the_book"
             android:textAlignment="center"
+            android:fontFamily="@font/heebo_bold"
             android:textColor="@color/black"
-            android:textSize="30sp" />
+            android:textSize="24sp" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.appcompat.widget.LinearLayoutCompat>

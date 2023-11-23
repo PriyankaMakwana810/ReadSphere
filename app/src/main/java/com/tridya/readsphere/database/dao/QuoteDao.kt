@@ -6,8 +6,8 @@ import com.tridya.readsphere.database.table.Quote
 
 @Dao
 interface QuoteDao {
-    @Query("SELECT * FROM quote_table")
-    fun getAllQuotes(): LiveData<List<Quote>>
+    @Query("SELECT * FROM quote_table WHERE bookTitle = :bookTitle")
+    fun getAllQuotes(bookTitle: String): LiveData<List<Quote>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertQuote(quote: Quote)
