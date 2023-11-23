@@ -6,13 +6,15 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tridya.readsphere.R
+import com.tridya.readsphere.database.table.Quote
 
-class HighlightAdapter(private val highlightes: List<String>, private val pageNumber: Int) :
+class HighlightAdapter(private val highlights: List<Quote>, private val pageNumber: Int) :
     RecyclerView.Adapter<HighlightAdapter.ViewHolder?>() {
     //    var pageNumber = 0
     private var clickListener: OnHighlightClickListener? = null
 
     interface OnHighlightClickListener {
+
         fun onHighlightClick(position: Int)
     }
 
@@ -27,12 +29,12 @@ class HighlightAdapter(private val highlightes: List<String>, private val pageNu
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val highlight = highlightes[position]
-        holder.titleTextView.text = highlight
+        val highlight = highlights[position]
+        holder.titleTextView.text = highlight.quoteText
     }
 
     override fun getItemCount(): Int {
-        return highlightes.size
+        return highlights.size
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

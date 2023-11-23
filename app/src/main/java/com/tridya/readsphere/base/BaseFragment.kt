@@ -13,12 +13,14 @@ import androidx.room.Room
 import com.tridya.readsphere.R
 import com.tridya.readsphere.database.Database
 import com.tridya.readsphere.database.dao.BookListDao
+import com.tridya.readsphere.database.dao.QuoteDao
 import com.tridya.readsphere.dialogs.ProgressDialog
 
 open class BaseFragment : Fragment() {
     lateinit var mContext: Context
     lateinit var mActivity: Activity
     lateinit var bookListDao: BookListDao
+    lateinit var quoteDao: QuoteDao
     private var progressDialog: ProgressDialog? = null
 
     override fun onAttach(context: Context) {
@@ -35,7 +37,7 @@ open class BaseFragment : Fragment() {
             mContext, Database::class.java, ROOM_DB
         ).allowMainThreadQueries().build()
         bookListDao = db.bookDao()
-
+        quoteDao = db.quoteDao()
     }
 
     fun showToastShort(message: String?) {
@@ -54,7 +56,6 @@ open class BaseFragment : Fragment() {
         progressDialog?.show()
     }
 
-
     fun hideProgressbar() {
         progressDialog?.dismiss()
     }
@@ -72,5 +73,4 @@ open class BaseFragment : Fragment() {
             if (strTitle != null) title?.text = strTitle
         }
     }
-
 }

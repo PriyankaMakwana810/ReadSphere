@@ -86,11 +86,11 @@
         <!-- Text Size -->
         <item name="android:textSize">14sp</item>
         <!-- Query Text Color -->
-        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorPrimary">@color/theme_primary</item>
         <!-- Hint Color -->
-        <item name="android:textColorHint">@color/white</item>
+        <item name="android:textColorHint">@color/theme_primary</item>
         <!-- Icon Color -->
-        <item name="android:tint">@color/white</item>
+        <item name="android:tint">@color/theme_primary</item>
         <!-- The hint text that appears when the user has not typed anything -->
         <item name="queryHint">@string/hint</item>
     </style>

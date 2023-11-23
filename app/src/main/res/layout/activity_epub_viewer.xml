@@ -40,14 +40,14 @@
                     android:layout_height="match_parent"
                     android:layout_marginHorizontal="8dp"
                     android:drawablePadding="10dp"
-                    android:fontFamily="@font/young_serif_regular"
+                    android:fontFamily="@font/heebo_bold"
                     android:gravity="center"
                     android:singleLine="true"
                     android:text="@string/title_of_the_book"
-                    android:textColor="@color/white"
+                    android:textColor="@color/theme_primary"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    app:drawableStartCompat="@drawable/v_ic_back" />
+                    app:drawableStartCompat="@drawable/ic_back_arrow" />
             </LinearLayout>
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -66,7 +66,7 @@
                     android:layout_gravity="center"
                     android:padding="10dp"
                     android:src="@drawable/v_ic_list_basic"
-                    android:tint="@color/white" />
+                    android:tint="@color/theme_primary" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/imgInfo"
@@ -75,7 +75,7 @@
                     android:layout_gravity="center"
                     android:padding="10dp"
                     android:src="@drawable/v_ic_info_header"
-                    android:tint="@color/white" />
+                    android:tint="@color/theme_primary" />
 
                 <androidx.appcompat.widget.SearchView
                     android:id="@+id/imgSearch"
@@ -92,7 +92,7 @@
                     android:layout_gravity="center"
                     android:padding="10dp"
                     android:src="@drawable/v_ic_marker_header"
-                    android:tint="@color/white" />
+                    android:tint="@color/theme_primary" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
         </RelativeLayout>
@@ -117,11 +117,11 @@
                 android:id="@+id/seekBarAutoScrollSpeed"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginVertical="8dp"
                 android:layout_weight="1"
                 android:max="10"
-                android:layout_gravity="center"
                 android:progress="1"
                 android:progressBackgroundTint="@color/color_progress"
                 android:progressTint="@color/white"
@@ -157,91 +157,73 @@
             android:padding="12dp"
             android:visibility="gone" />
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/seekLayout"
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:background="@color/theme_primary"
-            android:orientation="vertical"
-            android:paddingTop="18dp">
-
-            <SeekBar
-                android:id="@+id/seekBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/theme_light"
-                android:progressBackgroundTint="@color/color_progress"
-                android:progressTint="@color/white"
-                android:splitTrack="false"
-                android:thumb="@drawable/v_ic_custom_thumb"
-                android:thumbTint="@color/white" />
+            app:cardCornerRadius="8dp"
+            app:cardElevation="10dp"
+            app:cardUseCompatPadding="true">
 
             <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/seekLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="8dp"
-                android:background="@color/theme_light"
-                android:paddingHorizontal="8dp">
+                android:background="@color/color_theme_light"
+                android:orientation="vertical"
+                android:paddingTop="18dp">
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/imgSettings"
-                    android:layout_width="wrap_content"
+                <SeekBar
+                    android:id="@+id/seekBar"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:src="@drawable/v_ic_settings"
-                    app:tint="@color/white" />
+                    android:progress="10"
+                    android:progressBackgroundTint="@color/theme_primary"
+                    android:progressTint="@color/theme_primary"
+                    android:splitTrack="false"
+                    android:thumb="@drawable/v_ic_custom_thumb" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvCurrentPage"
-                    android:layout_width="0dp"
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:text="@string/page"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="12sp" />
+                    android:layout_marginVertical="8dp"
+                    android:paddingHorizontal="8dp">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/textViewPercent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center|end"
-                    android:paddingEnd="8dp"
-                    android:text="@string/_0"
-                    android:textColor="@color/white"
-                    android:textSize="12sp" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/imgSettings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:src="@drawable/v_ic_settings" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvCurrentPage"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/heebo_bold"
+                        android:text="@string/page"
+                        android:textAlignment="center"
+                        android:textColor="@color/theme_primary"
+                        android:textSize="12sp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/textViewPercent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|end"
+                        android:fontFamily="@font/heebo_bold"
+                        android:paddingHorizontal="8dp"
+                        android:text="@string/_0"
+                        android:textColor="@color/theme_primary"
+                        android:textSize="12sp" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
             </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.cardview.widget.CardView>
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvLastpage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/seekBar"
-                android:layout_alignEnd="@+id/seekBar"
-                android:layout_marginVertical="12dp"
-                android:layout_marginEnd="12dp"
-                android:text="@string/lastpage"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:visibility="gone" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/textViewPage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/seekBar"
-                android:layout_alignTop="@+id/seekBar"
-                android:layout_marginVertical="12dp"
-                android:layout_marginStart="12dp"
-                android:text="@string/currentpage"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                android:visibility="gone" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
     </FrameLayout>
 
     <androidx.appcompat.widget.LinearLayoutCompat

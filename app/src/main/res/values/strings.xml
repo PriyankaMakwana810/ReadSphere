@@ -1,6 +1,6 @@
 <resources>
     <!--    app name-->
-    <string name="app_name">eBookHaven</string>
+    <string name="app_name">ReadSphere</string>
 
     <!--    bottom nav bar text-->
     <string name="home">Home</string>
@@ -92,7 +92,6 @@
     <string name="tridhya_tech_ltd">Tridhya Tech Ltd.</string>
     <string name="application_version">Application Version :</string>
     <string name="reader_error_title">Oops! Failed to open the e-book file :(</string>
-    <string name="reader_error_subtitle">There could be several reasons for this to happen. \n 1. The e-book file was deleted.\n 2. The file is there, but you have uninstalled the app previously. \nPlease check inside the EbookHavenEbooks folder in your download directory, and if that\'s the case, please Delete the book. \nOnce you delete the Book you can access the Book Again.</string>
     <string name="publisher">Publisher: %1$s</string>
     <string name="pages">Pages:\n%1$s</string>
     <string name="publisher_">Publisher:\n%1$s</string>
