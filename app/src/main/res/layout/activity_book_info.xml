@@ -22,10 +22,11 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivBack"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
+                    android:layout_gravity="center"
                     android:background="?selectableItemBackground"
-                    android:paddingHorizontal="4dp"
+                    android:padding="4dp"
                     android:src="@drawable/ic_back_arrow" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -37,7 +38,7 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/young_serif_regular"
                     android:singleLine="true"
-                    android:textColor="@color/black"
+                    android:textColor="@color/theme_primary"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     tools:text="@string/app_name" />

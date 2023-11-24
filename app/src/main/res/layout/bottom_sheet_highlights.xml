@@ -24,14 +24,6 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivDeleteAll"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginHorizontal="20dp"
-            android:src="@drawable/ic_delete_black_30dp" />
-
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <View
@@ -45,33 +37,8 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="18dp"
         android:overScrollMode="never"
-        tools:itemCount="4"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:itemCount="4"
         tools:listitem="@layout/item_highlights" />
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/llError"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:visibility="gone"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="160dp"
-            android:layout_height="160dp"
-            android:gravity="center"
-            android:src="@drawable/placeholder_cat" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/heebo_medium"
-            android:gravity="center"
-            android:text="@string/nothing_here"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.appcompat.widget.LinearLayoutCompat>

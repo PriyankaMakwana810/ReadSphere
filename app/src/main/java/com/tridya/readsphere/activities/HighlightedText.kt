@@ -2,7 +2,6 @@ package com.tridya.readsphere.activities
 
 import android.content.Context
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.room.Room
 import com.tridya.readsphere.R
 import com.tridya.readsphere.database.Database
@@ -19,10 +18,10 @@ class HighlightedText(private val context: Context, private val webView: CustomW
     private val quoteList: MutableList<Quote> = mutableListOf()
 
     fun getQuotes(bookTitle: String): MutableList<Quote> {
-        quoteDao.getAllQuotes(bookTitle).observeForever(Observer { quotes ->
+        quoteDao.getAllQuotes(bookTitle).observeForever { quotes ->
             quoteList.clear()
             quoteList.addAll(quotes)
-        })
+        }
         return quoteList
     }
 
@@ -35,7 +34,7 @@ class HighlightedText(private val context: Context, private val webView: CustomW
                     "        document.designMode = 'on';\n" +
                     "        var sel = window.getSelection();\n" +
                     "        sel.collapse(document.body, 0);\n" +
-                    "        while (window.find(text)) {\n" +
+                    "        if (window.find(text)) {\n" +
                     "            document.execCommand('HiliteColor', false, backgroundColor);\n" +
                     "            sel.collapseToEnd();\n" +
                     "        }\n" +

@@ -1043,9 +1043,25 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
 
     //    highlighted item clicked navigate to particular highlight
     override fun onHighlightClick(position: Int) {
-        webView.loadUrl("file://" + pages[highlightedQuoteList[position].pageNumber.toString().toInt()])
+        webView.loadUrl(
+            "file://" + pages[highlightedQuoteList[position].pageNumber.toString().toInt()]
+        )
         webViewScrollAmount = highlightedQuoteList[position].webViewScrollY
         dialogHighlightsBottomSheet!!.dismiss()
+    }
+
+    override fun onDeleteHighlightClicked(position: Int, highlight: Quote) {
+        highlightedText.removeQuote(
+            highlight.quoteText,
+            highlight.bookTitle,
+            highlight.pageNumber,
+            session?.userPref?.backgroundColor!!
+        )
+        highlightedQuoteList = highlightedText.getQuotes(highlight.bookTitle)
+        reloadNavQuote()
+        dialogHighlightsBottomSheet?.dismiss()
+        highlightedText.highlightQuote(pageNumber)
+        webView.reload()
     }
 
     //    back pressed
@@ -1083,6 +1099,7 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
                         highlightedText.addQuote(gQuote, bookTitle!!, pageNumber, webView.scrollY)
                         highlightedText.highlightQuote(pageNumber)
                         reloadNavQuote()
+                        webViewScrollAmount = webView.scrollY
                         webView.reload()
                     }
                 } catch (e: IOException) {

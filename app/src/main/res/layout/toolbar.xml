@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="18dp"
             android:textAlignment="center"
-            android:textColor="@color/black"
+            android:textColor="@color/theme_primary"
             app:fontFamily="@font/young_serif_regular"
             android:textSize="20sp"
             android:textStyle="bold"
