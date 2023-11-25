@@ -15,14 +15,17 @@ import android.os.Looper
 import android.provider.Settings
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.util.Log
 import android.view.ActionMode
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View.OnTouchListener
 import android.view.WindowManager
+import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -62,8 +65,10 @@ import java.io.IOException
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.util.Calendar
+import java.util.Objects
+import kotlin.math.abs
+import kotlin.math.roundToInt
 import android.view.View as View1
-
 
 class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
     HighlightAdapter.OnHighlightClickListener {
@@ -77,8 +82,8 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
     private lateinit var highlightsBinding: BottomSheetHighlightsBinding
 
     var session: Session? = null
-    lateinit var db: Database
-    lateinit var bookListDao: BookListDao
+    private lateinit var db: Database
+    private lateinit var bookListDao: BookListDao
     var context: Context? = null
     var sharedPreferences: SharedPreferences? = null
     lateinit var webView: CustomWebView
@@ -610,7 +615,7 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
             }
         })
         binding.imgSearch.findViewById<View1>(androidx.appcompat.R.id.search_src_text)
-            .setOnLongClickListener { v: View1? ->
+            .setOnLongClickListener {
                 searchViewLongClick = true
                 false
             }
@@ -709,47 +714,21 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
                 }
                 webView.loadUrl("javascript:(function() { " + "var text=''; setInterval(function(){ if (window.getSelection().toString() && text!==window.getSelection().toString()){ text=window.getSelection().toString(); console.log(text); }}, 20);" + "})()")
                 webView.webChromeClient = object : WebChromeClient() {
-                    override fun onConsoleMessage(
-                        message: String,
-                        lineNumber: Int,
-                        sourceID: String,
-                    ) {
+                    override fun onConsoleMessage(message: String, lineNumber: Int, sourceID: String) {
                         gQuote = message
                     }
                 }
-                InjectCss(view, "::selection { background: #ffb7b7; }")
-                InjectCss(
-                    view,
-                    "* { padding: 0px !important; letter-spacing: normal !important; max-width: none !important; }"
-                )
-                InjectCss(view, "* { font-family: " + session?.userPref?.font + " !important; }")
-                InjectCss(view, "* { font-size: " + session?.userPref?.fontSize + " !important; }")
-                InjectCss(
-                    view,
-                    "* { font-weight: " + session?.userPref?.fontSize + " !important; }"
-                )
-                InjectCss(
-                    view,
-                    "body { background: " + session?.userPref?.backgroundColor + " !important; }"
-                )
-                InjectCss(view, "* { color: " + session?.userPref?.fontColor + " !important; }")
-                InjectCss(
-                    view,
-                    "* { line-height: " + session?.userPref?.lineSpacing + " !important; }"
-                )
-                InjectCss(
-                    view,
-                    "* { word-spacing: " + session?.userPref?.wordSpacing + " !important; }"
-                )
-                InjectCss(
-                    view,
-                    "body { margin: " + session?.userPref?.sideSpacing + " !important; }"
-                )
-                InjectCss(
-                    view,
-                    "img { display: block !important; width: 100% !important; height: auto !important; }"
-                )
-
+                injectCss(view, "::selection { background: #ffb7b7; }")
+                injectCss(view, "* { padding: 0px !important; letter-spacing: normal !important; max-width: none !important; }")
+                injectCss(view, "* { font-family: " + session?.userPref?.font + " !important; }")
+                injectCss(view, "* { font-size: " + session?.userPref?.fontSize + " !important; }")
+                injectCss(view, "* { font-weight: " + session?.userPref?.fontSize + " !important; }")
+                injectCss(view, "body { background: " + session?.userPref?.backgroundColor + " !important; }")
+                injectCss(view, "* { color: " + session?.userPref?.fontColor + " !important; }")
+                injectCss(view, "* { line-height: " + session?.userPref?.lineSpacing + " !important; }")
+                injectCss(view, "* { word-spacing: " + session?.userPref?.wordSpacing + " !important; }")
+                injectCss(view, "body { margin: " + session?.userPref?.sideSpacing + " !important; }")
+                injectCss(view, "img { display: block !important; width: 100% !important; height: auto !important; }")
                 try {
                     url = URLDecoder.decode(url, "UTF-8")
                 } catch (e: UnsupportedEncodingException) {
@@ -869,7 +848,7 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
         builder.setView(dialogUnlockBookBinding.root)
         val dialog = builder.create()
         dialog.setCancelable(false)
-        dialogUnlockBookBinding.ivPassVisible.setOnClickListener { v: View1? ->
+        dialogUnlockBookBinding.ivPassVisible.setOnClickListener {
             if (dialogUnlockBookBinding.passwordEditText.transformationMethod == HideReturnsTransformationMethod.getInstance()) {
                 dialogUnlockBookBinding.passwordEditText.transformationMethod =
                     PasswordTransformationMethod.getInstance()
@@ -885,7 +864,7 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
         dialogUnlockBookBinding.ivClose.setOnClickListener {
             finish()
         }
-        dialogUnlockBookBinding.unlockBtn.setOnClickListener { v: View1? ->
+        dialogUnlockBookBinding.unlockBtn.setOnClickListener {
             val enteredPassword =
                 dialogUnlockBookBinding.passwordEditText.text.toString().trim { it <= ' ' }
             if (enteredPassword == session?.userPref?.bookPassword) {
@@ -904,7 +883,7 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
         val dialogLockBookBinding = DialogLockBookBinding.inflate(LayoutInflater.from(this))
         builder.setView(dialogLockBookBinding.root)
         val dialog = builder.create()
-        dialogLockBookBinding.ivPassVisible.setOnClickListener { v: View1? ->
+        dialogLockBookBinding.ivPassVisible.setOnClickListener {
             if (dialogLockBookBinding.passwordEditText.transformationMethod == HideReturnsTransformationMethod.getInstance()) {
                 dialogLockBookBinding.passwordEditText.transformationMethod =
                     PasswordTransformationMethod.getInstance()
@@ -917,7 +896,7 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
                 dialogLockBookBinding.ivPassVisible.setImageResource(R.drawable.ic_pwd_hide) //hide
             }
         }
-        dialogLockBookBinding.ivRePassVisible.setOnClickListener { v: View1? ->
+        dialogLockBookBinding.ivRePassVisible.setOnClickListener {
             if (dialogLockBookBinding.repeatPasswordEditText.transformationMethod == HideReturnsTransformationMethod.getInstance()) {
                 dialogLockBookBinding.repeatPasswordEditText.transformationMethod =
                     PasswordTransformationMethod.getInstance()
@@ -933,7 +912,7 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
         dialogLockBookBinding.ivClose.setOnClickListener {
             dialog.dismiss()
         }
-        dialogLockBookBinding.saveButton.setOnClickListener { v: View1? ->
+        dialogLockBookBinding.saveButton.setOnClickListener {
             val password = dialogLockBookBinding.passwordEditText.text.toString().trim { it <= ' ' }
             val repeatPassword =
                 dialogLockBookBinding.repeatPasswordEditText.text.toString().trim { it <= ' ' }
@@ -1051,6 +1030,10 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
     }
 
     override fun onDeleteHighlightClicked(position: Int, highlight: Quote) {
+        if (session?.userPref?.backgroundColor == null) {
+            userPref!!.backgroundColor = "White"
+            session?.userPref = userPref
+        }
         highlightedText.removeQuote(
             highlight.quoteText,
             highlight.bookTitle,
@@ -1090,17 +1073,27 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
 
     //WebView LongClick Menu
     override fun onActionModeStarted(mode: ActionMode) {
+
+        Log.d("ActionMode", "onActionModeStarted")
         if (!searchViewLongClick) {
-            mode.menu.add(0, 15264685, 0, "Highlight")
-            mode.menu.add(0, 45657841, 0, "Remove Highlight")
+            webView.scrollBy(0,1)
+            Log.d("ActionMode", "Adding menu items")
+            mode.menu.add(Menu.CATEGORY_SYSTEM, 15264685, 0, "Highlight")
+            mode.menu.add(Menu.CATEGORY_SYSTEM, 45657841, 0, "Remove Highlight")
             mode.menu.findItem(15264685).setOnMenuItemClickListener { item: MenuItem? ->
                 try {
                     if (gQuote != "") {
-                        highlightedText.addQuote(gQuote, bookTitle!!, pageNumber, webView.scrollY)
-                        highlightedText.highlightQuote(pageNumber)
+                        highlightedText.addQuote(
+                            gQuote,
+                            bookTitle!!,
+                            pageNumber,
+                            webView.scrollY
+                        )
+                        highlightSelectedText()
+//                        highlightedText.highlightQuote(pageNumber)
                         reloadNavQuote()
                         webViewScrollAmount = webView.scrollY
-                        webView.reload()
+//                        webView.reload()
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -1138,7 +1131,32 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
         searchViewLongClick = false
         super.onActionModeFinished(mode)
     }
+    fun highlightSelectedText(){
+        webView.evaluateJavascript(
+            """(
+                function(){
+                var selection = window.getSelection();
+                var range = selection.getRangeAt(0);
+                var span = document.createElement("span");
+                span.style.backgroundColor = "yellow";
+                span.appendChild(range.extractContents());
+                range.insertNode(span);
+                var start = selection.anchorOffset;
+                var end = selection.focusOffset;
+                if (start >= 0 && end >= 0){
+    	            console.log("start: " + start.toString());
+    	            console.log("end: " + end);
+                }
+                return selection.toString()+"|"+start.toString()+"|"+end.toString()
+                }
+                )()
+                """
+        ) { value ->
+            val data = value.split('|')
+            Log.d("TAG", "highlightSelectedText: ${data.toString()}",)
 
+        }
+    }
     private fun startAutoScroll(webView: WebView?, initialSpeed: Int) {
         currentScrollSpeed = initialSpeed + 1 // Add 1 to avoid zero speed
         autoScrollHandler.postDelayed(object : Runnable {
@@ -1158,12 +1176,11 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
         currentScrollSpeed = progress + 1 // Add 1 to avoid zero speed
     }
 
-    private fun InjectCss(webView: WebView, vararg cssRules: String) {
+    private fun injectCss(webView: WebView, vararg cssRules: String) {
         val jsUrl = StringBuilder("javascript:")
         jsUrl.append(CREATE_CUSTOM_SHEET).append("if (typeof(customSheet) != 'undefined') {")
-        var cnt = 0
-        for (cssRule in cssRules) {
-            jsUrl.append("customSheet.insertRule('").append(cssRule).append("', ").append(cnt++)
+        for ((cnt, cssRule) in cssRules.withIndex()) {
+            jsUrl.append("customSheet.insertRule('").append(cssRule).append("', ").append(cnt)
                 .append(");")
         }
         jsUrl.append("}")
@@ -1197,7 +1214,7 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
                 if (java.lang.Boolean.TRUE == session?.userPref?.readingModeSwipe) {
                     try {
                         // right to left swipe .. go to next page
-                        if (e1.x - e2.x > 150 && Math.abs(velocityX) > 1000) {
+                        if (e1.x - e2.x > 150 && abs(velocityX) > 1000) {
                             if (pageNumber < pages.size - 1) {
                                 pageNumber++
                                 binding.llFinished.gone()
@@ -1214,7 +1231,7 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
                                 }, 3000)
                             }
                             return true
-                        } else if (e2.x - e1.x > 150 && Math.abs(velocityX) > 1000) {
+                        } else if (e2.x - e1.x > 150 && abs(velocityX) > 1000) {
                             if (pageNumber > 0) {
                                 pageNumber--
                                 webView.loadUrl("file://" + pages[pageNumber])
@@ -1229,9 +1246,7 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
                     }
                 } else {
                     try {//bottom to top, go to next document
-                        if (e1.y - e2.y > 150 && Math.abs(velocityY) > 1000 && webView.scrollY >= Math.round(
-                                webView.contentHeight * webView.scale
-                            ) - webView.height - 10
+                        if (e1.y - e2.y > 150 && abs(velocityY) > 1000 && webView.scrollY >= (webView.contentHeight * webView.scale).roundToInt() - webView.height - 10
                         ) {
                             if (pageNumber < pages.size - 1) {
                                 pageNumber++
@@ -1250,7 +1265,7 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
                             }
                             return true
                         } //top to bottom, go to prev document
-                        else if (e2.y - e1.y > 150 && Math.abs(velocityY) > 1000 && webView.scrollY <= 10) {
+                        else if (e2.y - e1.y > 150 && abs(velocityY) > 1000 && webView.scrollY <= 10) {
                             if (pageNumber > 0) {
                                 pageNumber--
                                 webView.loadUrl("file://" + pages[pageNumber])

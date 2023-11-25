@@ -100,5 +100,10 @@
     <string name="https_www_obooko_com">https://www.obooko.com/</string>
     <string name="https_manybooks_net">https://manybooks.net/</string>
     <string name="https_www_ebooksread_com">https://www.ebooksread.com/</string>
+    <string name="highlight">Highlight</string>
+    <string name="remove_highlight">Remove Highlight</string>
+    <string name="please_grant_necessary_permissions">Please Grant Necessary Permissions!!</string>
+    <string name="this_app_is_specificly_designed_to_read_e_books_available_in_your_storage_ngrant_the_permission_to_continue_to_app">This app is specifically designed to read e-books available in your storage ! \nGrant the permission to continue to App.</string>
+    <string name="grant_permissions">Grant Permissions</string>
 
 </resources>

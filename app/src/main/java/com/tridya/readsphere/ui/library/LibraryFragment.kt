@@ -107,6 +107,7 @@ class LibraryFragment : BaseFragment(), HomeAdapter.onItemClick {
                     if (bookList.isEmpty()) {
                         binding.rvBooks.gone()
                         binding.llNothingError.visible()
+                        hideProgressbar()
                     } else {
                         adapter.clearList()
                         adapter.addList(bookList)
