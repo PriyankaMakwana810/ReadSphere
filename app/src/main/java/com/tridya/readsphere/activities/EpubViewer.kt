@@ -1083,17 +1083,19 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
             mode.menu.findItem(15264685).setOnMenuItemClickListener { item: MenuItem? ->
                 try {
                     if (gQuote != "") {
+//                        below function will highlight a word for only one time
+//                        highlightSelectedText()
                         highlightedText.addQuote(
                             gQuote,
                             bookTitle!!,
                             pageNumber,
                             webView.scrollY
                         )
-                        highlightSelectedText()
-//                        highlightedText.highlightQuote(pageNumber)
+//                        below function will highlight selected word by storing it to storage and then highlighting it
+                        highlightedText.highlightQuote(pageNumber)
                         reloadNavQuote()
                         webViewScrollAmount = webView.scrollY
-//                        webView.reload()
+                        webView.reload()
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -1131,6 +1133,7 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
         searchViewLongClick = false
         super.onActionModeFinished(mode)
     }
+//    below function will highlight selected text and return before and after words of selected text along with offsets of word
     fun highlightSelectedText(){
         webView.evaluateJavascript(
             """(
@@ -1141,11 +1144,32 @@ class EpubViewer : BaseActivity(), ChaptersAdapter.OnItemClickListener,
                 span.style.backgroundColor = "yellow";
                 span.appendChild(range.extractContents());
                 range.insertNode(span);
+                var startContainer = range.startContainer;
+                var startOffset = range.startOffset;
+                var endContainer = range.endContainer;
+                var endOffset = range.endOffset;
+                var textBefore = '';
+                var textAfter = '';
                 var start = selection.anchorOffset;
-                var end = selection.focusOffset;
+                var end = selection.focusOffset;                
+                // Find the nearest text nodes for start and end containers
+                while (startContainer.nodeType !== 3 && startContainer.childNodes.length > 0) {
+                    startContainer = startContainer.childNodes[startOffset];
+                }
+
+                while (endContainer.nodeType !== 3 && endContainer.childNodes.length > 0) {
+                    endContainer = endContainer.childNodes[endOffset];
+                }
+
+                var selectedText = selection.toString();
+                var textBefore = startContainer.nodeType === 3 ? startContainer.textContent.substring(0, startOffset).trim() : '';
+                var textAfter = endContainer.nodeType === 3 ? endContainer.textContent.substring(endOffset).trim() : '';
+                
                 if (start >= 0 && end >= 0){
     	            console.log("start: " + start.toString());
     	            console.log("end: " + end);
+    	            console.log("textBefore: " + textBefore);
+    	            console.log("textAfter: " + textAfter);
                 }
                 return selection.toString()+"|"+start.toString()+"|"+end.toString()
                 }

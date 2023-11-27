@@ -25,6 +25,7 @@ class HighlightedText(private val context: Context, private val webView: CustomW
         return quoteList
     }
 
+    //    below function will highlight all occurrence of same word like the, his, her etc
     fun highlightQuote(pageNumber: Int) {
         // Highlight quotes in WebView
         webView.evaluateJavascript(
@@ -34,7 +35,7 @@ class HighlightedText(private val context: Context, private val webView: CustomW
                     "        document.designMode = 'on';\n" +
                     "        var sel = window.getSelection();\n" +
                     "        sel.collapse(document.body, 0);\n" +
-                    "        if (window.find(text)) {\n" +
+                    "        while (window.find(text)) {\n" +
                     "            document.execCommand('HiliteColor', false, backgroundColor);\n" +
                     "            sel.collapseToEnd();\n" +
                     "        }\n" +
@@ -63,6 +64,45 @@ class HighlightedText(private val context: Context, private val webView: CustomW
         }
     }
 
+//    below function will highlight first occurrence of same word like the, his, her etc
+    /*    fun highlightQuote(pageNumber: Int) {
+            // Highlight quotes in WebView
+            webView.evaluateJavascript(
+                "function doSearch(text, backgroundColor) {\n" +
+                        "    if (window.find && window.getSelection) {\n" +
+                        "        var windowHeight = window.scrollY;\n" +
+                        "        document.designMode = 'on';\n" +
+                        "        var sel = window.getSelection();\n" +
+                        "        sel.collapse(document.body, 0);\n" +
+                        "        if (window.find(text)) {\n" +
+                        "            document.execCommand('HiliteColor', false, backgroundColor);\n" +
+                        "            sel.collapseToEnd();\n" +
+                        "        }\n" +
+                        "        document.designMode = 'off';\n" +
+                        "        window.scrollTo(0, windowHeight);\n" +
+                        "    }\n" +
+                        "}", null
+            )
+
+            for (i in quoteList.indices) {
+                if ((pageNumber == quoteList[i].pageNumber)) {
+                    val editedQuote: String =
+                        quoteList[i].quoteText.replace("'".toRegex(), "\\\\'")
+                    if (editedQuote.contains(Objects.requireNonNull(System.getProperty("line.separator")))) {
+                        val editedQuotes = editedQuote.split(
+                            Objects.requireNonNull(System.getProperty("line.separator")).toRegex()
+                        ).dropLastWhile { it.isEmpty() }
+                            .toTypedArray()
+                        for (quote: String in editedQuotes) {
+                            webView.evaluateJavascript("doSearch('$quote', 'Yellow')", null)
+                        }
+                    } else {
+                        webView.evaluateJavascript("doSearch('$editedQuote', 'Yellow')", null)
+                    }
+                }
+            }
+        }*/
+
     fun removeQuote(quoteText: String, bookTitle: String, pageNumber: Int, themeBack: String) {
 //        quoteDao.deleteQuote(quote)
         val existingQuote = quoteDao.isQuoteIsExisting(quoteText, pageNumber)
@@ -84,6 +124,7 @@ class HighlightedText(private val context: Context, private val webView: CustomW
             Toast.makeText(context, "quote already exist!", Toast.LENGTH_SHORT).show()
         }
     }
+
 
     private fun isQuoteExistOnPage(quoteText: String, pageNumber: Int): Boolean {
         val existingQuote = quoteDao.isQuoteIsExisting(quoteText, pageNumber)
